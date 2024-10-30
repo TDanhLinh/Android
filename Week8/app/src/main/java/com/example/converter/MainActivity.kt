@@ -24,10 +24,17 @@ class MainActivity : AppCompatActivity() {
     // Exchange rates with USD as the base currency
     private val exchangeRates = mapOf(
         "USD" to 1.0,
-        "EUR" to 0.85,
-        "JPY" to 110.0,
-        "GBP" to 0.75,
-        "AUD" to 1.35
+        "EUR" to 0.922008,
+        "GBP" to 0.768636,
+        "INR" to 84.084349,
+        "AUD" to 1.517471,
+        "CAD" to 1.391510,
+        "SGD" to 1.322578,
+        "CHF" to 0.866620,
+        "MYR" to 4.380553,
+        "JPY" to 153.075709,
+        "CNY" to 7.124875,
+        "VND" to 25291.0
     )
 
     private val currencyList = exchangeRates.keys.toList()
@@ -47,6 +54,10 @@ class MainActivity : AppCompatActivity() {
 
         // Set up currency spinners with options
         setupCurrencySpinners()
+
+        // Set default selections for USD and VND
+        currencySpinner1.setSelection(currencyList.indexOf("USD"))
+        currencySpinner2.setSelection(currencyList.indexOf("VND"))
 
         // Update currency units on spinner selection
         currencySpinner1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
