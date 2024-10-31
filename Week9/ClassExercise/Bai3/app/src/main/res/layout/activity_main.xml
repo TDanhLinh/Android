@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thông tin sinh viên"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@id/form"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <!-- Full Name Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Họ và tên" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/fullName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null" />
+        </TableRow>
+
+        <!-- Student ID Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="MSSV" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/mssv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null" />
+        </TableRow>
+
+        <!-- Gender Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Giới tính" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <RadioGroup
+                android:id="@+id/genderGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nam" />
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nữ" />
+            </RadioGroup>
+        </TableRow>
+
+        <!-- Birthday Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Ngày sinh" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <EditText
+                    android:id="@+id/birthdayInput"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:hint="dd/mm/yyyy"
+                    android:inputType="date"
+                    android:background="@null" />
+                <ImageButton
+                    android:id="@+id/showCalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Chọn ngày"
+                    app:srcCompat="@drawable/ic_baseline_calendar_month_24" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- Email Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Email" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null" />
+        </TableRow>
+
+        <!-- Phone Number Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Số điện thoại" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/phoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null" />
+        </TableRow>
+
+        <!-- Address Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Nơi ở hiện tại" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <Spinner
+                    android:id="@+id/spinnerWard"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+                <Spinner
+                    android:id="@+id/spinnerDistrict"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+                <Spinner
+                    android:id="@+id/spinnerCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- Hobbies Row -->
+        <TableRow android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Sở thích" />
+        </TableRow>
+        <TableRow android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/sportCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thể thao" />
+                <CheckBox
+                    android:id="@+id/movieCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Điện ảnh" />
+                <CheckBox
+                    android:id="@+id/musicCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Âm nhạc" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- Agreement Row -->
+        <TableRow android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/agreeCheckBox"
+                android:layout_width="wrap_content"
+                android:text="Đồng ý với các điều khoản" />
+        </TableRow>
+
+        <!-- Submit Button Row -->
+        <TableRow android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:text="Submit" />
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
