@@ -7,26 +7,38 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class StudentAdapter(val students: List<StudentModel>): RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
-  class StudentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    val textStudentName: TextView = itemView.findViewById(R.id.text_student_name)
-    val textStudentId: TextView = itemView.findViewById(R.id.text_student_id)
-    val imageEdit: ImageView = itemView.findViewById(R.id.image_edit)
-    val imageRemove: ImageView = itemView.findViewById(R.id.image_remove)
-  }
+class StudentAdapter(
+    private val students: List<StudentModel>,
+    private val onItemAction: (position: Int, action: Action) -> Unit
+) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
-    val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_student_item,
-       parent, false)
-    return StudentViewHolder(itemView)
-  }
+    enum class Action { EDIT, DELETE }
 
-  override fun getItemCount(): Int = students.size
+    class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textStudentName: TextView = itemView.findViewById(R.id.text_student_name)
+        val textStudentId: TextView = itemView.findViewById(R.id.text_student_id)
+        val imageEdit: ImageView = itemView.findViewById(R.id.image_edit)
+        val imageRemove: ImageView = itemView.findViewById(R.id.image_remove)
+    }
 
-  override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-    val student = students[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(
+            R.layout.layout_student_item, parent, false
+        )
+        return StudentViewHolder(itemView)
+    }
 
-    holder.textStudentName.text = student.studentName
-    holder.textStudentId.text = student.studentId
-  }
+    override fun getItemCount(): Int = students.size
+
+    override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
+        val student = students[position]
+        holder.textStudentName.text = student.studentName
+        holder.textStudentId.text = student.studentId
+
+        // Edit action
+        holder.imageEdit.setOnClickListener { onItemAction(position, Action.EDIT) }
+
+        // Delete action
+        holder.imageRemove.setOnClickListener { onItemAction(position, Action.DELETE) }
+    }
 }
