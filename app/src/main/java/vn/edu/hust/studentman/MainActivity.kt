@@ -3,162 +3,170 @@ package vn.edu.hust.studentman
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.ViewGroup
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import androidx.activity.enableEdgeToEdge
+import android.widget.ListView
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-    val students = mutableListOf(
+    private val students = mutableListOf(
         StudentModel("Nguyễn Văn An", "SV001"),
         StudentModel("Trần Thị Bảo", "SV002"),
-        StudentModel("Lê Hoàng Cường", "SV003"),
-        StudentModel("Phạm Thị Dung", "SV004"),
-        StudentModel("Đỗ Minh Đức", "SV005"),
-        StudentModel("Vũ Thị Hoa", "SV006"),
-        StudentModel("Hoàng Văn Hải", "SV007"),
-        StudentModel("Bùi Thị Hạnh", "SV008"),
-        StudentModel("Đinh Văn Hùng", "SV009"),
-        StudentModel("Nguyễn Thị Linh", "SV010"),
-        StudentModel("Phạm Văn Long", "SV011"),
-        StudentModel("Trần Thị Mai", "SV012"),
-        StudentModel("Lê Thị Ngọc", "SV013"),
-        StudentModel("Vũ Văn Nam", "SV014"),
-        StudentModel("Hoàng Thị Phương", "SV015"),
-        StudentModel("Đỗ Văn Quân", "SV016"),
-        StudentModel("Nguyễn Thị Thu", "SV017"),
-        StudentModel("Trần Văn Tài", "SV018"),
-        StudentModel("Phạm Thị Tuyết", "SV019"),
-        StudentModel("Lê Văn Vũ", "SV020")
+        StudentModel("Phạm Văn Cường", "SV003"),
+        StudentModel("Lê Thị Dung", "SV004"),
+        StudentModel("Hoàng Văn Đức", "SV005"),
+        StudentModel("Nguyễn Thị Hồng", "SV006"),
+        StudentModel("Trần Minh Hải", "SV007"),
+        StudentModel("Đỗ Thị Hương", "SV008"),
+        StudentModel("Lý Văn Hoàng", "SV009"),
+        StudentModel("Vũ Thị Lan", "SV010"),
+        StudentModel("Nguyễn Minh Quân", "SV011"),
+        StudentModel("Trần Thị Thanh", "SV012"),
+        StudentModel("Đinh Văn Phong", "SV013"),
+        StudentModel("Bùi Thị Phượng", "SV014"),
+        StudentModel("Ngô Văn Tùng", "SV015")
     )
 
-    private val studentAdapter = StudentAdapter(students) { position, action ->
-        when (action) {
-            StudentAdapter.Action.EDIT -> showEditStudentDialog(position)
-            StudentAdapter.Action.DELETE -> showDeleteDialog(position)
-        }
-    }
+    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var listViewStudents: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<RecyclerView>(R.id.recycler_view_students).run {
-            adapter = studentAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity)
+        // Set up the toolbar
+        setSupportActionBar(findViewById(R.id.toolbar))
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        listViewStudents = findViewById(R.id.list_view_students)
+        val studentNames = students.map { "${it.studentName} (${it.studentId})" }
+
+        // Set up the ListView with an ArrayAdapter
+        adapter =
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, studentNames.toMutableList())
+        listViewStudents.adapter = adapter
+
+        // Handle item click (show a popup menu with options)
+        listViewStudents.setOnItemClickListener { _, view, position, _ ->
+            showPopupMenu(view, position)
+        }
+    }
+
+    // Show a popup menu for Edit and Delete options
+    private fun showPopupMenu(view: View, position: Int) {
+        val popupMenu = PopupMenu(this, view)
+
+        // Inflate the menu with options
+        popupMenu.menuInflater.inflate(R.menu.context_menu, popupMenu.menu)
+
+        // Handle menu item clicks
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.context_edit -> {
+                    showEditStudentDialog(position)
+                    true
+                }
+                R.id.context_remove -> {
+                    showDeleteDialog(position)
+                    true
+                }
+                else -> false
+            }
         }
 
-        findViewById<Button>(R.id.btn_add_new).setOnClickListener{
-            showAddStudentDialog();
+        // Show the popup menu
+        popupMenu.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.option_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_add_new -> {
+                showAddStudentDialog()
+                return true
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showAddStudentDialog() {
-        // Create a Dialog instance
-        val dialog = Dialog(this);
-        dialog.setContentView(R.layout.dialog_add_edit_student);
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_edit_student)
 
-        // Find edit text in the dialog
-        val studentNameInput = dialog.findViewById<EditText>(R.id.student_name_input);
-        val studentIDInput = dialog.findViewById<EditText>(R.id.student_id_input);
+        val studentNameInput = dialog.findViewById<EditText>(R.id.student_name_input)
+        val studentIDInput = dialog.findViewById<EditText>(R.id.student_id_input)
 
-        // Handle Add button
         dialog.findViewById<Button>(R.id.button_save).setOnClickListener {
-            val name = studentNameInput.text.toString();
-            val id = studentIDInput.text.toString();
+            val name = studentNameInput.text.toString()
+            val id = studentIDInput.text.toString()
 
-            // Validate input
             if (name.isNotEmpty() && id.isNotEmpty()) {
-                students.add(StudentModel(name, id));
-                studentAdapter.notifyItemInserted(students.size - 1);
-                dialog.dismiss();
+                val newStudent = StudentModel(name, id)
+                students.add(newStudent)
+                adapter.add("${newStudent.studentName} (${newStudent.studentId})")
+                dialog.dismiss()
             } else {
-                studentNameInput.error = "Name is required";
-                studentIDInput.error = "ID is required";
+                studentNameInput.error = "Name is required"
+                studentIDInput.error = "ID is required"
             }
         }
 
-        // Handle Cancel button
         dialog.findViewById<Button>(R.id.button_cancel).setOnClickListener {
-            dialog.dismiss();
+            dialog.dismiss()
         }
 
-        // Adjust the dialog's layout and display it
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        dialog.show();
+        dialog.show()
     }
 
-    private fun showEditStudentDialog(pos: Int) {
-        // Get the student data from pos
-        val student = students[pos];
+    private fun showEditStudentDialog(position: Int) {
+        val student = students[position]
 
-        // Create a Dialog instance
-        val dialog = Dialog(this);
-        dialog.setContentView(R.layout.dialog_add_edit_student);
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_edit_student)
 
-        // Find edit text
-        val studentNameInput = dialog.findViewById<EditText>(R.id.student_name_input);
-        val studentIDInput = dialog.findViewById<EditText>(R.id.student_id_input);
+        val studentNameInput = dialog.findViewById<EditText>(R.id.student_name_input)
+        val studentIDInput = dialog.findViewById<EditText>(R.id.student_id_input)
 
-        // Set text data for edit text
-        studentNameInput.setText(student.studentName);
-        studentIDInput.setText(student.studentId);
+        studentNameInput.setText(student.studentName)
+        studentIDInput.setText(student.studentId)
 
-        // Handle Save button
         dialog.findViewById<Button>(R.id.button_save).setOnClickListener {
-            val name = studentNameInput.text.toString();
-            val id = studentIDInput.text.toString();
+            val name = studentNameInput.text.toString()
+            val id = studentIDInput.text.toString()
 
-            // Validate input
             if (name.isNotEmpty() && id.isNotEmpty()) {
-                students[pos] = StudentModel(name, id);
-                studentAdapter.notifyItemChanged(pos);
-                dialog.dismiss();
+                students[position] = StudentModel(name, id)
+                adapter.insert("${name} (${id})", position)
+                adapter.remove(adapter.getItem(position + 1))
+                dialog.dismiss()
             } else {
-                studentNameInput.error = "Name is required";
-                studentIDInput.error = "ID is required";
+                studentNameInput.error = "Name is required"
+                studentIDInput.error = "ID is required"
             }
         }
 
-        // Handle Cancel button
         dialog.findViewById<Button>(R.id.button_cancel).setOnClickListener {
-            dialog.dismiss(); // Close Dialog
+            dialog.dismiss()
         }
 
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        dialog.show();
+        dialog.show()
     }
 
     private fun showDeleteDialog(position: Int) {
-        AlertDialog.Builder(this)
-            .setMessage("Are you sure you want to delete this student?")
+        AlertDialog.Builder(this).setMessage("Are you sure you want to delete this student?")
             .setPositiveButton("Yes") { _, _ ->
-                val deletedStudent = students[position]
                 students.removeAt(position)
-                studentAdapter.notifyItemRemoved(position)
-                showUndoSnackbar(deletedStudent, position)
-            }
-            .setNegativeButton("No", null)
-            .show()
-    }
-
-    private fun showUndoSnackbar(deletedStudent: StudentModel, position: Int) {
-        Snackbar.make(findViewById(R.id.main), "Student deleted", Snackbar.LENGTH_LONG)
-            .setAction("Undo") {
-                students.add(position, deletedStudent)
-                studentAdapter.notifyItemInserted(position)
-            }.show()
+                adapter.remove(adapter.getItem(position))
+            }.setNegativeButton("No", null).show()
     }
 }

@@ -1,5 +1,6 @@
 package vn.edu.hust.studentman
 
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,26 @@ class StudentAdapter(
 
     enum class Action { EDIT, DELETE }
 
-    class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    // Variable to track the context menu position
+    var contextMenuPosition: Int = -1
+
+    inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnCreateContextMenuListener {
         val textStudentName: TextView = itemView.findViewById(R.id.text_student_name)
         val textStudentId: TextView = itemView.findViewById(R.id.text_student_id)
         val imageEdit: ImageView = itemView.findViewById(R.id.image_edit)
         val imageRemove: ImageView = itemView.findViewById(R.id.image_remove)
+
+        init {
+            // Set context menu listener for the itemView
+            itemView.setOnCreateContextMenuListener(this)
+        }
+
+        override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+            contextMenuPosition = adapterPosition
+            menu?.add(adapterPosition, R.id.context_edit, 0, "Edit")
+            menu?.add(adapterPosition, R.id.context_remove, 1, "Remove")
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
@@ -35,10 +51,8 @@ class StudentAdapter(
         holder.textStudentName.text = student.studentName
         holder.textStudentId.text = student.studentId
 
-        // Edit action
+        // Handle click actions
         holder.imageEdit.setOnClickListener { onItemAction(position, Action.EDIT) }
-
-        // Delete action
         holder.imageRemove.setOnClickListener { onItemAction(position, Action.DELETE) }
     }
 }
